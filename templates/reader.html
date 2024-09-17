@@ -12,22 +12,28 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/bookblock.css' %}" />
     <style>
         #bb-bookblock {
-            width: 100%;
-            height: calc(100vh - 90px); /* Subtract the height of the buttons and their margin */
-            position: relative;
+            display:flex;
+            flex-wrap:wrap;
+            justify-content: center;
+            width: 90%;
+            height: 100%; /* Subtract the height of the buttons and their margin */
+            position:  relative;
             overflow: hidden;
         }
         
         .bb-item {
-            width: auto;
-            height: auto;
-            position: absolute;
+            width: 100%;
+            height: 100%;
+            /* position: absolute; */
             left: 0;
-            top: -10px;
-            overflow: hidden;
-            display: flex; /* This will make the pages appear side by side */
-            justify-content: center; /* This will center the pages horizontally */ 
-             align-items: center; /* This will center the pages vertically */ 
+            /* top: -10px; */
+            float:left;
+            background: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            justify-content: center; 
+             align-items: center;   
         }
         
         .bb-item canvas {
@@ -170,13 +176,13 @@
 
     document.getElementById('prevPage').addEventListener('click', function() {
         $('#bb-bookblock').bookblock('prev');
-        currentPage = Math.max(1, currentPage - 2);
+        currentPage = Math.max(1, currentPage - 1);
         analyzeSentimentAndPlayMusic();
     });
 
     document.getElementById('nextPage').addEventListener('click', function() {
         $('#bb-bookblock').bookblock('next');
-        currentPage = Math.min(pdfDoc.numPages, currentPage + 2); 
+        currentPage = Math.min(pdfDoc.numPages, currentPage + 1); 
         analyzeSentimentAndPlayMusic();
         console.log("next page");
         
@@ -218,11 +224,11 @@
                 // Play background music based on the sentiment
                 var audioElement = document.getElementById('background-music');
                 if (sentiment > 0) {
-                    audioElement.src = '{% static 'happy.mp3' %}';
+                    audioElement.src = '{% static "happy.mp3" %}';
                 } else if (sentiment < 0) {
-                    audioElement.src = '{% static 'sad.mp3' %}';
+                    audioElement.src = '{% static "sad.mp3" %}';
                 } else {
-                    audioElement.src = '{% static 'neutral.mp3' %}';
+                    audioElement.src = '{% static "neutral.mp3" %}';
                 }
                 console.log(audioElement.src);
                 audioElement.play();

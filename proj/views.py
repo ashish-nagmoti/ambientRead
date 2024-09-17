@@ -7,11 +7,13 @@ import os
 from django.templatetags.static import static
 from django.http import JsonResponse
 from textblob import TextBlob
+from django.contrib.auth.decorators import login_required
 
 def analyze_sentiment(request):
     # Get the text from the request
     text = request.POST.get('text')
-
+    if text is None:
+        return JsonResponse({'error': 'No content provided'}, status=201)
     # Perform sentiment analysis with TextBlob
     blob = TextBlob(text)
     sentiment = blob.sentiment
@@ -49,6 +51,7 @@ def upload_file(request):
         form = UploadFileForm()
     return render(request, 'upload.html', {'form': form})
 
+@login_required
 def library(request):
     user_files = UserFile.objects.filter(user=request.user)
     return render(request, 'library.html',{'user_files':user_files})
@@ -63,4 +66,7 @@ def reader(request, book_id):
 
 
 def get_book_file(book_id):
-    return static(f'book_{book_id}.pdf')
+    book = UserFile.objects.get(id = book_id )
+    file_path = book.file.name.split('/')[-1]
+    # return book.file.url
+    return static(file_path)
